@@ -15,13 +15,91 @@ local screenW, screenH, halfW = display.actualContentWidth, display.actualConten
 
 local BackGroundID = 2
 
-local Posts=0
-local Likes=0
+
+local Posts = 0
+local Likes = 0
+
+function doesFileExist( fname)
+    local results = false
+    local filePath = system.pathForFile( fname, system.DocumentsDirectory )
+    if ( filePath ) then
+        local file, errorString = io.open( filePath, "r" )
+        if not file then
+            print( "File error: " .. errorString )
+        else
+            print( "File found: " .. fname )
+            results = true
+            file:close()
+        end
+    end
+    return results
+end
+
+
+function WriteFile(saveData,File)
+local path = system.pathForFile( File, system.DocumentsDirectory )
+local file, errorString = io.open( path, "w" )
+ 
+if not file then
+    print( "File error: " .. errorString )
+else
+    file:write( saveData )
+    io.close( file )
+end
+file = nil
+end
+
+
+function ReadFile(File)
+local path = system.pathForFile( File, system.DocumentsDirectory )
+local file, errorString = io.open( path, "r" )
+local contents
+
+if not file then
+    print( "File error: " .. errorString )
+else
+    contents = file:read( "*n" )
+    io.close( file )
+end
+file = nil
+return contents
+end
+
+
+function GetPosts()
+	if doesFileExist("PostsCount.txt") then
+		Posts = ReadFile("PostsCount.txt")
+		if Posts == nil then
+			Posts = 0
+		end
+	else
+		Posts = 0
+	end
+end
+
+
+function Achievement_1_Unlocked( event )
+    if ( event.action == "clicked" ) then
+        local i = event.index
+        if ( i == 1 ) then
+			timer.resume(Automat)
+        end
+    end
+end
 
 function Automation()
 	Posts = Posts + Likes
 	local NewName="Posts:" .. Posts
 	Post_Count.text = NewName
+
+	if Posts % 50 == 0 then
+	WriteFile(Posts,"PostsCount.txt")
+	end
+
+	if Posts >= 1000000 then
+		local alert = native.showAlert("Nice","You Got 1000000 Posts Achievement Unlocked ",{"YAY"})
+		timer.pause(Automat)
+	end
 end
 
 function BackGroundChanger()
@@ -78,9 +156,11 @@ function scene:create( event )
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
-	local Automat = timer.performWithDelay( 1000 , Automation , 0)
+	GetPosts()
+
+	Automat = timer.performWithDelay( 1000 , Automation , 0)
 	
-	local BackGroundChange = timer.performWithDelay( 5000 , BackGroundChanger , 0)
+	BackGroundChange = timer.performWithDelay( 5000 , BackGroundChanger , 0)
 
 	-- display a background image
 	background2 = display.newImageRect( "FB_Files/FB_Background_2.png", display.actualContentWidth, display.actualContentHeight )
@@ -141,7 +221,7 @@ function scene:create( event )
 	PostButton.y=display.actualContentHeight*0.5
 
     Post_Count = display.newText( "Posts:" .. Posts, screenW*0.5, screenW*0.01, native.systemFont,30)
-    Post_Count:setFillColor( 0, 0, 1 )
+    Post_Count:setFillColor( 144/255, 188/255, 255/255 )
 	
 	local Like_Button = widget.newButton
 	{
@@ -156,7 +236,7 @@ function scene:create( event )
 	
 
 	Like_Count = display.newText( "Likes:" .. Likes, screenW*0.2, screenW*0.2, native.systemFont,30)
-    Like_Count:setFillColor( 0, 0, 1 )
+    Like_Count:setFillColor( 0/255, 234/255, 255/255 )
 
 
 	-- all display objects must be inserted into group

@@ -16,12 +16,18 @@ local widget = require "widget"
 local playBtn
 
 -- 'onRelease' event listener for playBtn
-local function onPlayBtnRelease()
+function onPlayBtnRelease()
 	
 	-- go to level1.lua scene
 	composer.gotoScene( "Choose", "fade", 500 )
 	
 	return true	-- indicates successful touch
+end
+
+function GotoAchievements(event)
+	if event.phase == "began" then
+		composer.gotoScene("Achievement","fade",500)
+	end
 end
 
 function scene:create( event )
@@ -60,10 +66,29 @@ function scene:create( event )
 	playBtn.x = display.contentCenterX
 	playBtn.y = display.actualContentHeight*0.5
 	
+
+	AchievementBtn = widget.newButton{
+		label = "Achievement",
+        onEvent = GotoAchievements,
+        emboss = false,
+        -- Properties for a rounded rectangle button
+        shape = "roundedRect",
+        width = 200,
+        height = 40,
+        cornerRadius = 2,
+        fillColor = { default={1,0,0,1}, over={1,0.1,0.7,0.4} },
+        strokeColor = { default={1,0.4,0,1}, over={0.8,0.8,1,1} },
+        strokeWidth = 4
+	}
+	AchievementBtn.x = display.contentCenterX
+	AchievementBtn.y = display.actualContentHeight*0.7
+
+
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
 	sceneGroup:insert( titleLogo )
 	sceneGroup:insert( playBtn )
+	sceneGroup:insert( AchievementBtn)
 end
 
 function scene:show( event )
