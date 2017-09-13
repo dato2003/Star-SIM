@@ -14,6 +14,7 @@ local widget = require "widget"
 
 -- forward declarations and other locals
 local playBtn
+local Turn=1
 
 -- 'onRelease' event listener for playBtn
 function onPlayBtnRelease()
@@ -30,6 +31,19 @@ function GotoAchievements(event)
 	end
 end
 
+function MusicSwitch(event)
+	if event.phase == "began"  and Turn == 1  then
+		audio.pause(backgroundMusicChannel)
+		Turn = 0
+		SoundBtn:setLabel("Music On")
+	elseif event.phase == "began" and Turn == 0 then
+		audio.resume(backgroundMusicChannel)
+		Turn = 1
+		SoundBtn:setLabel("Music Off")
+	end
+end
+
+
 function scene:create( event )
 	local sceneGroup = self.view
 
@@ -39,7 +53,7 @@ function scene:create( event )
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
 	local backgroundMusic = audio.loadStream("Music/BackGroundMusic.mp3")
-	local backgroundMusicChannel = audio.play( backgroundMusic, { channel=1, loops=-1, fadein=5000 } )
+	backgroundMusicChannel = audio.play( backgroundMusic, { channel=1, loops=-1, fadein=5000 } )
 
 	-- display a background image
 	local background = display.newImageRect( "background.jpg", display.actualContentWidth, display.actualContentHeight )
@@ -87,11 +101,28 @@ function scene:create( event )
 	AchievementBtn.y = display.actualContentHeight*0.7
 
 
+	SoundBtn = widget.newButton{
+		label = "Music Off",
+        onEvent = MusicSwitch,
+        emboss = false,
+        -- Properties for a rounded rectangle button
+        shape = "roundedRect",
+        width = 200,
+        height = 40,
+        cornerRadius = 2,
+        fillColor = { default={1,0,0,1}, over={1,0.1,0.7,0.4} },
+        strokeColor = { default={1,0.4,0,1}, over={0.8,0.8,1,1} },
+        strokeWidth = 4
+	}
+	SoundBtn.x = display.contentCenterX
+	SoundBtn.y = display.actualContentHeight*0.6
+
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
 	sceneGroup:insert( titleLogo )
 	sceneGroup:insert( playBtn )
-	sceneGroup:insert( AchievementBtn)
+	sceneGroup:insert( AchievementBtn )
+	sceneGroup:insert( SoundBtn )
 end
 
 function scene:show( event )
