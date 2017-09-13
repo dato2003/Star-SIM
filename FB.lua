@@ -67,7 +67,7 @@ return contents
 end
 
 
-function GetPosts()
+function GetInfo()
 	if doesFileExist("PostsCount.txt") then
 		Posts = ReadFile("PostsCount.txt")
 		if Posts == nil then
@@ -75,6 +75,22 @@ function GetPosts()
 		end
 	else
 		Posts = 0
+	end
+	if doesFileExist("LikesCount.txt") then
+		Likes = ReadFile("LikesCount.txt")
+		if Likes == nil then
+			Likes = 0
+		end
+	else
+		Likes = 0
+	end
+	if doesFileExist("ShareCount.txt") then
+		Shares = ReadFile("ShareCount.txt")
+		if Shares == nil then
+			Shares = 0
+		end
+	else
+		Shares = 0
 	end
 end
 
@@ -89,12 +105,20 @@ function Achievement_1_Unlocked( event )
 end
 
 function Automation()
-	Posts = Posts + Likes
+	Posts = Posts + Likes + (2 * Shares)
 	local NewName="Posts:" .. Posts
 	Post_Count.text = NewName
 
 	if Posts % 50 == 0 then
 	WriteFile(Posts,"PostsCount.txt")
+	end
+
+	if Likes % 10 == 0 then
+	WriteFile(Likes,"LikesCount.txt")
+	end
+
+	if Shares % 10 == 0 then
+	WriteFile(Shares,"SharesCount.txt")
 	end
 
 	if Posts >= 1000000 then
@@ -173,7 +197,7 @@ function scene:create( event )
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
-	GetPosts()
+	GetInfo()
 
 	Automat = timer.performWithDelay( 1000 , Automation , 0)
 	
@@ -290,6 +314,9 @@ function scene:show( event )
 	
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
+		timer.resume(Automat)
+		timer.resume(BackGroundChange)
+
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
@@ -307,8 +334,12 @@ function scene:hide( event )
 		--
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
+		timer.pause(Automat)
+		timer.pause(BackGroundChange)
+
 	elseif phase == "did" then
 		-- Called when the scene is now off screen
+		
 	end	
 end
 
