@@ -84,8 +84,8 @@ function GetInfo()
 	else
 		Likes = 0
 	end
-	if doesFileExist("ShareCount.txt") then
-		Shares = ReadFile("ShareCount.txt")
+	if doesFileExist("SharesCount.txt") then
+		Shares = ReadFile("SharesCount.txt")
 		if Shares == nil then
 			Shares = 0
 		end
@@ -146,7 +146,7 @@ end
 
 function BackToMenu(event)
     if event.phase == "began" then
-        composer.gotoScene("menu","fade",500)
+        composer.gotoScene("Choose","fade",500)
     end
 end
 
@@ -314,9 +314,10 @@ function scene:show( event )
 	
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
+		if Posts ~= 0 then 
 		timer.resume(Automat)
 		timer.resume(BackGroundChange)
-
+		end
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 

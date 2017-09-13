@@ -31,6 +31,12 @@ function TwittPath(event)
 	end
 end
 
+function BackToMenu(event)
+	if event.phase=="began" then
+		composer.gotoScene("menu","fade",500)
+	end
+end
+
 function scene:create( event )
 
 	-- Called when the scene's view does not exist.
@@ -88,12 +94,31 @@ function scene:create( event )
 	TwittButton.x=display.contentCenterX
 	TwittButton.y=display.contentCenterY
 
+
+	local BackButton = widget.newButton{
+		label = "Back To Menu",
+        onEvent = BackToMenu,
+        emboss = false,
+        -- Properties for a rounded rectangle button
+        shape = "roundedRect",
+        width = 200,
+        height = 40,
+        cornerRadius = 2,
+        fillColor = { default={1,0,0,1}, over={1,0.1,0.7,0.4} },
+        strokeColor = { default={1,0.4,0,1}, over={0.8,0.8,1,1} },
+        strokeWidth = 4
+	}
+	BackButton.x = display.contentCenterX
+	BackButton.y = display.actualContentHeight*0.7
+
+
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
 	sceneGroup:insert( ChooseTXT )
 	sceneGroup:insert( FbButton )
 	sceneGroup:insert( InstaButton )
 	sceneGroup:insert( TwittButton )
+	sceneGroup:insert( BackButton )
 end
 
 

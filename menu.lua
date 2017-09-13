@@ -38,6 +38,9 @@ function scene:create( event )
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
+	local backgroundMusic = audio.loadStream("Music/BackGroundMusic.mp3")
+	local backgroundMusicChannel = audio.play( backgroundMusic, { channel=1, loops=-1, fadein=5000 } )
+
 	-- display a background image
 	local background = display.newImageRect( "background.jpg", display.actualContentWidth, display.actualContentHeight )
 	background.anchorX = 0
