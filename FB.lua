@@ -18,6 +18,7 @@ local BackGroundID = 2
 
 local Posts = 0
 local Likes = 0
+local Shares = 0
 
 function doesFileExist( fname)
     local results = false
@@ -148,6 +149,22 @@ function Like(event)
 	end
 end
 
+function Share(event)
+	if event.phase == "began" then
+		if Posts>=20 then
+			Shares=Shares+1
+			Posts=Posts-20
+			local NewName="Shares:"..Shares
+			Share_Count.text=NewName
+			NewName="Posts:" .. Posts
+			Post_Count.text=NewName
+		else
+			local alert = native.showAlert("Not enough Posts","You Dont have enough Posts",{"OK"})
+		end
+	end
+end
+
+
 function scene:create( event )
 	local sceneGroup = self.view
 
@@ -238,6 +255,21 @@ function scene:create( event )
 	Like_Count = display.newText( "Likes:" .. Likes, screenW*0.2, screenW*0.2, native.systemFont,30)
     Like_Count:setFillColor( 0/255, 234/255, 255/255 )
 
+	local Share_Button = widget.newButton
+	{
+		width = 70,
+		height = 70,
+		defaultFile = "FB_Files/Share_Pic.png",
+		overFile = "FB_Files/Share_Pic.png",
+		onEvent = Share
+	}
+	Share_Button.x=display.actualContentWidth*0.7
+	Share_Button.y=display.actualContentHeight*0.65
+
+
+	Share_Count = display.newText( "Shares:" .. Shares, screenW*0.7, screenW*0.2, native.systemFont,30)
+	Share_Count:setFillColor( 0/255, 234/255, 255/255 )
+
 
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background1 )
@@ -248,6 +280,8 @@ function scene:create( event )
     sceneGroup:insert( Post_Count )
 	sceneGroup:insert( Like_Button )
 	sceneGroup:insert( Like_Count )
+	sceneGroup:insert( Share_Button )
+	sceneGroup:insert( Share_Count)
 end
 
 function scene:show( event )
