@@ -87,6 +87,12 @@ function Checker()
           Achievements_1_Status.text = "Done"
       end
     end
+    if doesFileExist("TweetsCount.txt") then
+      local Posts = ReadFile("TweetsCount.txt")
+      if Posts >= 1000000 then
+          Achievements_2_Status.text = "Done"
+      end
+    end
 end
 
 function scene:create( event )
@@ -144,6 +150,14 @@ function scene:create( event )
     Achievements_1_Status = display.newText( "Not Done", ScrW*0.5, ScrH * 0.3 , native.systemFont, 16 )
     Achievements_1_Status:setFillColor( 213/255, 129/255, 0/255 )
     Achievements:insert( Achievements_1_Status )
+
+    Achievements_2 = display.newText( "Get 1 Million Tweets on Twitter", ScrW*0.5, ScrH * 0.4 , native.systemFont, 16 )
+    Achievements_2:setFillColor( 213/255, 129/255, 0/255 )
+    Achievements:insert( Achievements_2 )
+
+    Achievements_2_Status = display.newText( "Not Done", ScrW*0.5, ScrH * 0.5 , native.systemFont, 16 )
+    Achievements_2_Status:setFillColor( 213/255, 129/255, 0/255 )
+    Achievements:insert( Achievements_2_Status )
 
     Checker()
 

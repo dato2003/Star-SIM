@@ -100,16 +100,18 @@ function Achievement_1_Unlocked( event )
         local i = event.index
         if ( i == 1 ) then
 			timer.resume(Automat)
+			WriteFile("1","Achievement_1.txt")
         end
     end
 end
+
 
 function Automation()
 	Posts = Posts + Likes + (2 * Shares)
 	local NewName="Posts:" .. Posts
 	Post_Count.text = NewName
 
-	if Posts % 50 == 0 then
+	if Posts + Likes + (2 * Shares) > 50 then
 	WriteFile(Posts,"PostsCount.txt")
 	end
 
@@ -122,8 +124,10 @@ function Automation()
 	end
 
 	if Posts >= 1000000 then
-		local alert = native.showAlert("Nice","You Got 1000000 Posts Achievement Unlocked ",{"YAY"})
-		timer.pause(Automat)
+		if doesFileExist("Achievement_1.txt")==false then
+			local alert = native.showAlert("Nice","You Got 1000000 Posts Achievement Unlocked ",{"YAY"},Achievement_1_Unlocked)
+			timer.pause(Automat)
+		end
 	end
 end
 
@@ -204,7 +208,7 @@ function scene:create( event )
 	BackGroundChange = timer.performWithDelay( 5000 , BackGroundChanger , 0)
 
 	-- display a background image
-	background2 = display.newImageRect( "FB_Files/FB_Background_2.png", display.actualContentWidth, display.actualContentHeight )
+	background2 = display.newImageRect( "FB_Files/FB_Background_1.png", display.actualContentWidth, display.actualContentHeight )
 	background2.anchorX = 0
 	background2.anchorY = 0
 	background2.x = 0 + display.screenOriginX 
@@ -218,7 +222,7 @@ function scene:create( event )
 	background1.isVisible = false
 
 
-	background3 = display.newImageRect( "FB_Files/FB_Background_3.png", display.actualContentWidth, display.actualContentHeight )
+	background3 = display.newImageRect( "FB_Files/FB_Background_1.png", display.actualContentWidth, display.actualContentHeight )
 	background3.anchorX = 0
 	background3.anchorY = 0
 	background3.x = 0 + display.screenOriginX 
@@ -276,8 +280,8 @@ function scene:create( event )
 	Like_Button.y=display.actualContentHeight*0.65
 	
 
-	Like_Count = display.newText( "Likes:" .. Likes, screenW*0.2, screenW*0.2, native.systemFont,30)
-    Like_Count:setFillColor( 0/255, 234/255, 255/255 )
+	Like_Count = display.newText( "Likes:" .. Likes, screenW*0.5, screenW*0.4, native.systemFont,30)
+    Like_Count:setFillColor( 144/255, 188/255, 255/255  )
 
 	local Share_Button = widget.newButton
 	{
@@ -291,8 +295,8 @@ function scene:create( event )
 	Share_Button.y=display.actualContentHeight*0.65
 
 
-	Share_Count = display.newText( "Shares:" .. Shares, screenW*0.7, screenW*0.2, native.systemFont,30)
-	Share_Count:setFillColor( 0/255, 234/255, 255/255 )
+	Share_Count = display.newText( "Shares:" .. Shares, screenW*0.5, screenW*0.2, native.systemFont,30)
+	Share_Count:setFillColor( 144/255, 188/255, 255/255  )
 
 
 	-- all display objects must be inserted into group
@@ -315,7 +319,6 @@ function scene:show( event )
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
 		if Posts ~= 0 then 
-		timer.resume(Automat)
 		timer.resume(BackGroundChange)
 		end
 	elseif phase == "did" then
@@ -335,7 +338,6 @@ function scene:hide( event )
 		--
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
-		timer.pause(Automat)
 		timer.pause(BackGroundChange)
 
 	elseif phase == "did" then

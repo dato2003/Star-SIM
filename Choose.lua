@@ -21,7 +21,8 @@ end
 
 function InstaPath(event)
 	if event.phase=="began" then
-		composer.gotoScene("Instagram","fade",500)
+		local alert = native.showAlert("Wait","Work in Progress",{"Ok"})
+		--composer.gotoScene("Instagram","fade",500)
 	end
 end
 
